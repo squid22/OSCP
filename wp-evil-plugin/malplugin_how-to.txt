@@ -1,5 +1,0 @@
-# Simply add it to a zip file
-zip malplugin.zip malplugin.php
-
-# Add it: 
-# Plugins --> Add New --> Upload --> Activate
